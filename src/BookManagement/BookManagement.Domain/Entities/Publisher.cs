@@ -1,7 +1,8 @@
-﻿namespace BookManagement.Domain.Entities;
-public class Publisher
+﻿using BookManagement.Domain.Entities.Abstractions;
+
+namespace BookManagement.Domain.Entities;
+public class Publisher : BaseEntity
 {
-    public Guid Id { get; set; } = Guid.NewGuid();
     public string Name { get; set; }
     public string Address { get; set; }
     public string Phone { get; set; }

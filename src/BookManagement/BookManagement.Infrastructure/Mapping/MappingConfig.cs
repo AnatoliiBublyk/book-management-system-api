@@ -1,6 +1,4 @@
-﻿using BookManagement.Contracts.Dtos;
-using BookManagement.Contracts.Requests;
-using BookManagement.Contracts.Responses;
+﻿using BookManagement.Contracts.Requests;
 using BookManagement.Domain.Entities;
 using Mapster;
 

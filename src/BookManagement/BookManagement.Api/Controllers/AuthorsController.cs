@@ -19,19 +19,19 @@ namespace BookManagement.Api.Controllers
         [Route("")]
         public async Task<IEnumerable<AuthorDto>> GetAllAuthors()
         {
-            var Authors = await mediator.Send(new GetAllAuthorsQuery());
-            return Authors;
+            var authors = await mediator.Send(new GetAllAuthorsQuery());
+            return authors;
         }
         
         [HttpGet]
         [Route("{id}")]
         public async Task<AuthorDto> GetAuthorById(Guid id)
         {
-            var Author = await mediator.Send(new GetAuthorByIdQuery()
+            var author = await mediator.Send(new GetAuthorByIdQuery()
             {
                 Id = id
             });
-            return Author;
+            return author;
         }
         
         [HttpPost]
@@ -47,9 +47,9 @@ namespace BookManagement.Api.Controllers
 
         [HttpPut]
         [Route("{id}")]
-        public async Task<ActionResult<UpdateAuthorResponse>> UpdateAuthor(Guid id, [FromBody] AuthorDto author)
+        public async Task<ActionResult<UpdateAuthorResponse>> UpdateAuthor(Guid id, [FromBody] UpdateAuthorRequest request)
         {
-            if (id != author.Id)
+            if (id != request.Id)
             {
                 return BadRequest();
             }
@@ -57,7 +57,7 @@ namespace BookManagement.Api.Controllers
             var response = await mediator.Send(new UpdateAuthorCommand()
             {
                 Id = id,
-                Author = author
+                Body = request
             });
             return Ok(response);
 

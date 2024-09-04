@@ -47,9 +47,9 @@ namespace BookManagement.Api.Controllers
 
         [HttpPut]
         [Route("{id}")]
-        public async Task<ActionResult<UpdatePublisherResponse>> UpdatePublisher(Guid id, [FromBody] PublisherDto author)
+        public async Task<ActionResult<UpdatePublisherResponse>> UpdatePublisher(Guid id, [FromBody] UpdatePublisherRequest request)
         {
-            if (id != author.Id)
+            if (id != request.Id)
             {
                 return BadRequest();
             }
@@ -57,7 +57,7 @@ namespace BookManagement.Api.Controllers
             var response = await mediator.Send(new UpdatePublisherCommand()
             {
                 Id = id,
-                Publisher = author
+                Body = request
             });
             return Ok(response);
 

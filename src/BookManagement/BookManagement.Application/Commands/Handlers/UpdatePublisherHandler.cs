@@ -1,7 +1,7 @@
 ﻿using BookManagement.Application.Repo;
 using BookManagement.Contracts.Dtos;
 using BookManagement.Contracts.Responses;
-using BookManagement.Domain.Entities;
+using Mapster;
 using MapsterMapper;
 using MediatR;
 
@@ -11,11 +11,11 @@ public class UpdatePublisherHandler(IMapper mapper, IPublisherRepo repo) : IRequ
 {
     public async Task<UpdatePublisherResponse> Handle(UpdatePublisherCommand request, CancellationToken cancellationToken)
     {
-        var authorEntity = await repo.GetByIdAsync(request.Id);
+        var publisherEntity = await repo.GetByIdAsync(request.Id);
 
-        var author = mapper.Map<Publisher>(request.Publisher);
+        request.Body.Adapt(publisherEntity);
 
-        var result = await repo.UpdateAsync(author);
+        var result = await repo.UpdateAsync(publisherEntity);
         return new UpdatePublisherResponse
         {
             Publisher = mapper.Map<PublisherDto>(result)

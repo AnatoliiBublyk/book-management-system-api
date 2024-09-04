@@ -1,7 +1,7 @@
 ﻿using BookManagement.Application.Repo;
 using BookManagement.Contracts.Dtos;
 using BookManagement.Contracts.Responses;
-using BookManagement.Domain.Entities;
+using Mapster;
 using MapsterMapper;
 using MediatR;
 
@@ -13,10 +13,9 @@ public class UpdateAuthorHandler(IMapper mapper, IAuthorRepo repo) : IRequestHan
     {
         var authorEntity = await repo.GetByIdAsync(request.Id);
 
-        var author = mapper.Map<Author>(request.Author);
-        author.PasswordHash = authorEntity.PasswordHash;
+        request.Body.Adapt(authorEntity);
 
-        var result = await repo.UpdateAsync(author);
+        var result = await repo.UpdateAsync(authorEntity);
         return new UpdateAuthorResponse
         {
             Author = mapper.Map<AuthorDto>(result)

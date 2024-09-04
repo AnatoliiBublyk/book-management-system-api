@@ -2,6 +2,7 @@
 
 namespace BookManagement.Infrastructure.Database;
 
+using BookManagement.Domain.Entities.Abstractions;
 using Microsoft.EntityFrameworkCore;
 
 public class AppDbContext : DbContext
@@ -11,13 +12,49 @@ public class AppDbContext : DbContext
 
     }
 
+    public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = new CancellationToken())
+    {
+        SetTrackingFields();
+        return base.SaveChangesAsync(cancellationToken);
+    }
+
+    private void SetTrackingFields()
+    {
+        var entries = ChangeTracker.Entries<BaseEntity>()
+            .Where(e => e.State is EntityState.Added or EntityState.Modified);
+        var now = DateTime.UtcNow;
+        foreach (var entry in entries)
+        {
+            entry.Entity.UpdatedAt = now;
+
+            if(entry.State is EntityState.Added)
+                entry.Entity.CreatedAt = now;
+        }
+    }
+
     public DbSet<Author> Authors { get; set; }
     public DbSet<Book> Books { get; set; }
     public DbSet<Publisher> Publishers { get; set; }
 
-
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+
+        // Apply common configurations for all entities inheriting from BaseEntity
+        foreach (var entityType in modelBuilder.Model.GetEntityTypes())
+        {
+            if (typeof(BaseEntity).IsAssignableFrom(entityType.ClrType))
+            {
+                modelBuilder.Entity(entityType.ClrType).Property(nameof(BaseEntity.CreatedAt))
+                    .IsRequired();
+                modelBuilder.Entity(entityType.ClrType).Property(nameof(BaseEntity.CreatedBy))
+                    .HasMaxLength(100);
+                modelBuilder.Entity(entityType.ClrType).Property(nameof(BaseEntity.UpdatedAt))
+                    .IsRequired();
+                modelBuilder.Entity(entityType.ClrType).Property(nameof(BaseEntity.UpdatedBy))
+                    .HasMaxLength(100);
+            }
+        }
+
         // Configuring Author entity
         modelBuilder.Entity<Author>(entity =>
         {

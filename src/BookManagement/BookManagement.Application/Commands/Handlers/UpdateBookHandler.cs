@@ -1,7 +1,7 @@
 ﻿using BookManagement.Application.Repo;
 using BookManagement.Contracts.Dtos;
 using BookManagement.Contracts.Responses;
-using BookManagement.Domain.Entities;
+using Mapster;
 using MapsterMapper;
 using MediatR;
 
@@ -13,8 +13,9 @@ public class UpdateBookHandler(IMapper mapper, IBookRepo repo) : IRequestHandler
     {
         var bookEntity = await repo.GetByIdAsync(request.Id);
 
-        var book = mapper.Map<Book>(request.Book);
-        var result = await repo.UpdateAsync(book);
+        request.Body.Adapt(bookEntity);
+
+        var result = await repo.UpdateAsync(bookEntity);
         return new UpdateBookResponse
         {
             Book = mapper.Map<BookDto>(result)

@@ -1,6 +1,7 @@
 ﻿namespace BookManagement.Application.Repo;
 
 public interface IBaseRepo<T>
+where T : class
 {
     public Task<IQueryable<T>> GetAllAsync();
     public Task<T> GetByIdAsync(Guid id);

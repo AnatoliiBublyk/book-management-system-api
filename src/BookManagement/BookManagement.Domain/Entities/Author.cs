@@ -1,7 +1,8 @@
-﻿namespace BookManagement.Domain.Entities;
-public class Author
+﻿using BookManagement.Domain.Entities.Abstractions;
+
+namespace BookManagement.Domain.Entities;
+public class Author : BaseEntity
 {
-    public Guid Id { get; set; } = Guid.NewGuid();
     public string Username { get; set; }
     public string PasswordHash { get; set; }
     public string FirstName { get; set; }

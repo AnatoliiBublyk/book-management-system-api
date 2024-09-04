@@ -3,7 +3,6 @@ using BookManagement.Application.Queries;
 using BookManagement.Contracts.Dtos;
 using BookManagement.Contracts.Requests;
 using BookManagement.Contracts.Responses;
-using MapsterMapper;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
@@ -47,9 +46,9 @@ namespace BookManagement.Api.Controllers
 
         [HttpPut]
         [Route("{id}")]
-        public async Task<ActionResult<UpdateBookResponse>> UpdateBook(Guid id, [FromBody] BookDto book)
+        public async Task<ActionResult<UpdateBookResponse>> UpdateBook(Guid id, [FromBody] UpdateBookRequest request)
         {
-            if (id != book.Id)
+            if (id != request.Id)
             {
                 return BadRequest();
             }
@@ -57,7 +56,7 @@ namespace BookManagement.Api.Controllers
             var response = await mediator.Send(new UpdateBookCommand()
             {
                 Id = id,
-                Book = book
+                Body = request
             });
             return Ok(response);
 
