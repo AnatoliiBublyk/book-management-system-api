@@ -1,5 +1,4 @@
 ﻿using BookManagement.Application.Repo;
-using BookManagement.Application.Services.Impl;
 using BookManagement.Contracts.Dtos;
 using BookManagement.Contracts.Responses;
 using BookManagement.Domain.Entities;
@@ -8,7 +7,7 @@ using MediatR;
 
 namespace BookManagement.Application.Commands.Handlers;
 
-public class AddPublisherHandler(IMapper mapper, IPublisherRepo repo, IHashService hashService) : IRequestHandler<AddPublisherCommand, AddPublisherResponse>
+public class AddPublisherHandler(IMapper mapper, IPublisherRepo repo) : IRequestHandler<AddPublisherCommand, AddPublisherResponse>
 {
     public async Task<AddPublisherResponse> Handle(AddPublisherCommand request, CancellationToken cancellationToken)
     {

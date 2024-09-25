@@ -1,8 +1,6 @@
 using BookManagement.Api.Middlewares;
 using BookManagement.Application.Queries;
 using BookManagement.Application.Repo;
-using BookManagement.Application.Services;
-using BookManagement.Application.Services.Impl;
 using BookManagement.Domain.Entities;
 using BookManagement.Infrastructure.Database;
 using BookManagement.Infrastructure.Repo;
@@ -28,9 +26,6 @@ try
     });
 
     builder.Services.AddScoped<IMapper, Mapper>();
-
-    // Services
-    builder.Services.AddScoped<IHashService, Sha256Service>();
 
     // CQRS specific
     builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(typeof(GetAllBooksQuery).Assembly));
