@@ -3,13 +3,17 @@ using BookManagement.Application.Queries;
 using BookManagement.Application.Repo;
 using BookManagement.Application.Services;
 using BookManagement.Application.Services.Impl;
+using BookManagement.Domain.Entities;
 using BookManagement.Infrastructure.Database;
 using BookManagement.Infrastructure.Repo;
 using MapsterMapper;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.OpenApi.Models;
 using NLog.Extensions.Logging;
 using NLog.Web;
 using NLog;
+using Swashbuckle.AspNetCore.Filters;
 
 var logger = LogManager.Setup().LoadConfigurationFromAppSettings().GetCurrentClassLogger();
 try
@@ -26,8 +30,6 @@ try
     builder.Services.AddScoped<IMapper, Mapper>();
 
     // Services
-    builder.Services.AddDbContext<AppDbContext>(options =>
-        options.UseMySQL(builder.Configuration.GetConnectionString("DefaultConnection")));
     builder.Services.AddScoped<IHashService, Sha256Service>();
 
     // CQRS specific
@@ -38,12 +40,33 @@ try
     builder.Services.AddScoped<IPublisherRepo, PublisherRepo>();
     builder.Services.AddScoped<IAuthorRepo, AuthorRepo>();
 
+    // Identity
+    builder.Services.AddAuthorization();
+    builder.Services.AddAuthentication()
+        .AddBearerToken(IdentityConstants.BearerScheme);
+    builder.Services.AddIdentityCore<Author>()
+        .AddEntityFrameworkStores<AppDbContext>()
+        .AddApiEndpoints();
+    builder.Services.AddDbContext<AppDbContext>(options =>
+        options.UseMySQL(builder.Configuration.GetConnectionString("DefaultConnection")));
+
     // Controllers
     builder.Services.AddControllers();
 
     // OpenApi
     builder.Services.AddEndpointsApiExplorer();
-    builder.Services.AddSwaggerGen();
+    builder.Services.AddSwaggerGen(options =>
+    {
+        options.AddSecurityDefinition("oauth2", new OpenApiSecurityScheme
+        {
+            In = ParameterLocation.Header,
+            Name = "Authorization",
+            Type = SecuritySchemeType.ApiKey
+        });
+        options.OperationFilter<SecurityRequirementsOperationFilter>();
+    }
+
+    );
 
 
 

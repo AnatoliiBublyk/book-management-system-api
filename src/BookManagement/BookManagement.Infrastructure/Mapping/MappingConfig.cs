@@ -18,11 +18,6 @@ public class MappingConfig
             .Ignore(x => x.Author)
             .Ignore(x => x.Publisher);
 
-        //Author
-        Config.NewConfig<AddAuthorRequest, Author>()
-            .Ignore(x => x.Id)
-            .Ignore(x => x.Books);
-
         //Publisher
         Config.NewConfig<AddPublisherRequest, Publisher>()
             .Ignore(x => x.Id)

@@ -5,6 +5,7 @@ using BookManagement.Contracts.Requests;
 using BookManagement.Contracts.Responses;
 using MapsterMapper;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BookManagement.Api.Controllers
@@ -12,7 +13,8 @@ namespace BookManagement.Api.Controllers
     [ApiController]
     [Route("api/[controller]/")]
     [Consumes("application/json")]
-    public class AuthorsController(IMediator mediator, IMapper mapper) : ControllerBase
+    [Authorize]
+    public class AuthorsController(IMediator mediator) : ControllerBase
     {
 
         [HttpGet]
@@ -34,17 +36,6 @@ namespace BookManagement.Api.Controllers
             return author;
         }
         
-        [HttpPost]
-        [Route("")]
-        public async Task<ActionResult<AddAuthorResponse>> AddAuthor([FromBody] AddAuthorRequest request)
-        {
-            var response = await mediator.Send(new AddAuthorCommand()
-            {
-                Request = request
-            });
-            return CreatedAtAction(nameof(GetAuthorById), new { id = response.Author.Id }, response);
-        }
-
         [HttpPut]
         [Route("{id}")]
         public async Task<ActionResult<UpdateAuthorResponse>> UpdateAuthor(Guid id, [FromBody] UpdateAuthorRequest request)

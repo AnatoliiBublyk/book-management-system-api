@@ -5,6 +5,7 @@ using BookManagement.Contracts.Requests;
 using BookManagement.Contracts.Responses;
 using MapsterMapper;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BookManagement.Api.Controllers
@@ -12,26 +13,27 @@ namespace BookManagement.Api.Controllers
     [ApiController]
     [Route("api/[controller]/")]
     [Consumes("application/json")]
-    public class PublishersController(IMediator mediator, IMapper mapper) : ControllerBase
+    [Authorize]
+    public class PublishersController(IMediator mediator) : ControllerBase
     {
 
         [HttpGet]
         [Route("")]
         public async Task<IEnumerable<PublisherDto>> GetAllPublishers()
         {
-            var Publishers = await mediator.Send(new GetAllPublishersQuery());
-            return Publishers;
+            var publishers = await mediator.Send(new GetAllPublishersQuery());
+            return publishers;
         }
         
         [HttpGet]
         [Route("{id}")]
         public async Task<PublisherDto> GetPublisherById(Guid id)
         {
-            var Publisher = await mediator.Send(new GetPublisherByIdQuery()
+            var publisher = await mediator.Send(new GetPublisherByIdQuery()
             {
                 Id = id
             });
-            return Publisher;
+            return publisher;
         }
         
         [HttpPost]

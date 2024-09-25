@@ -4,6 +4,7 @@ using BookManagement.Contracts.Dtos;
 using BookManagement.Contracts.Requests;
 using BookManagement.Contracts.Responses;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BookManagement.Api.Controllers
@@ -11,6 +12,7 @@ namespace BookManagement.Api.Controllers
     [ApiController]
     [Route("api/[controller]/")]
     [Consumes("application/json")]
+    [Authorize]
     public class BooksController(IMediator mediator) : ControllerBase
     {
 

@@ -1,18 +1,19 @@
 ﻿using BookManagement.Domain.Entities;
-
-namespace BookManagement.Infrastructure.Database;
-
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using BookManagement.Domain.Entities.Abstractions;
 using Microsoft.EntityFrameworkCore;
 
-public class AppDbContext : DbContext
+namespace BookManagement.Infrastructure.Database;
+
+public class AppDbContext : IdentityDbContext<Author, IdentityRole<Guid>, Guid>
 {
     public AppDbContext(DbContextOptions<AppDbContext> options) : base(options)
     {
 
     }
 
-    public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = new CancellationToken())
+    public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = new())
     {
         SetTrackingFields();
         return base.SaveChangesAsync(cancellationToken);
@@ -20,7 +21,7 @@ public class AppDbContext : DbContext
 
     private void SetTrackingFields()
     {
-        var entries = ChangeTracker.Entries<BaseEntity>()
+        var entries = ChangeTracker.Entries<IEntity<Guid>>()
             .Where(e => e.State is EntityState.Added or EntityState.Modified);
         var now = DateTime.UtcNow;
         foreach (var entry in entries)
@@ -38,7 +39,7 @@ public class AppDbContext : DbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-
+        base.OnModelCreating(modelBuilder);
         // Apply common configurations for all entities inheriting from BaseEntity
         foreach (var entityType in modelBuilder.Model.GetEntityTypes())
         {
