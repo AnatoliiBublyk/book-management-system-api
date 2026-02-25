@@ -14,11 +14,18 @@ public class AuthorRepo(AppDbContext context) : IAuthorRepo
 
     public async Task<Author> GetByIdAsync(Guid id)
     {
-        var entity = await context.Set<Author>().AsNoTracking().FirstOrDefaultAsync(b => b.Id == id);
+        var entity = await context.Set<Author>().AsNoTracking().FirstOrDefaultAsync(a => a.Id == id);
         if (entity is null)
         {
             throw new KeyNotFoundException($"Entity of type <{nameof(Author)}> with ID {id} was not found.");
         }
+        return entity;
+    }
+
+    public async Task<Author> AddAsync(Author entity)
+    {
+        await context.Set<Author>().AddAsync(entity);
+        await context.SaveChangesAsync();
         return entity;
     }
 

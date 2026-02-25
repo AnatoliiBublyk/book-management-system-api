@@ -1,9 +1,11 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using AspNetCore.Identity.MongoDbCore.Models;
 using BookManagement.Domain.Entities.Abstractions;
 using Microsoft.AspNetCore.Identity;
+using MongoDB.Bson.Serialization.Attributes;
 
 namespace BookManagement.Domain.Entities;
-public class Author : IdentityUser<Guid>, IEntity<Guid>
+public class Author : MongoIdentityUser<Guid>, IEntity<Guid>
 {
     public override Guid Id { get; set; }
     [EmailAddress]

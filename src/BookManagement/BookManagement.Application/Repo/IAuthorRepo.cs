@@ -2,10 +2,7 @@
 
 namespace BookManagement.Application.Repo;
 
-public interface IAuthorRepo
+public interface IAuthorRepo : IBaseRepo<Author>
 {
-    public Task<IQueryable<Author>> GetAllAsync();
-    public Task<Author> GetByIdAsync(Guid id);
-    public Task<Author> UpdateAsync(Author entity);
-    public Task DeleteByIdAsync(Guid id);
-}
+
+}   
